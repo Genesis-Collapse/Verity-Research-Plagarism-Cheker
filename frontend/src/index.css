@@ -1,0 +1,286 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --primary: 217 91% 35%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 35%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* Clean card with subtle shadow */
+  .card {
+    @apply rounded-lg border bg-card text-card-foreground;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04),
+                0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  }
+
+  .card-elevated {
+    @apply card;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07),
+                0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Plagiarism highlight — red on light bg */
+  .highlight-plagiarism {
+    background-color: hsla(0, 72%, 51%, 0.12);
+    border-bottom: 2px solid hsl(0, 72%, 51%);
+    border-radius: 2px;
+    padding: 1px 3px;
+    transition: background-color 0.2s ease;
+  }
+  .highlight-plagiarism:hover {
+    background-color: hsla(0, 72%, 51%, 0.22);
+  }
+
+  /* AI-generated highlight — blue on light bg */
+  .highlight-ai {
+    background-color: hsla(217, 91%, 50%, 0.10);
+    border-bottom: 2px solid hsl(217, 91%, 50%);
+    border-radius: 2px;
+    padding: 1px 3px;
+    transition: background-color 0.2s ease;
+  }
+  .highlight-ai:hover {
+    background-color: hsla(217, 91%, 50%, 0.20);
+  }
+
+  /* Score badge */
+  .score-badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+
+  /* Button base */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-all duration-200;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+  .btn-primary:hover {
+    background-color: hsl(217, 91%, 28%);
+    box-shadow: 0 4px 12px -2px hsla(217, 91%, 35%, 0.35);
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold transition-all duration-200 border;
+    color: hsl(var(--foreground));
+    background: transparent;
+  }
+  .btn-outline:hover {
+    background-color: hsl(var(--muted));
+  }
+
+  /* Custom scrollbar — light theme */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+
+  /* ── Skeleton Loading Shimmer ──────────────────────────── */
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsla(0, 0%, 100%, 0.5) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+  .skeleton-dark {
+    position: relative;
+    overflow: hidden;
+    background: hsl(210, 40%, 93%);
+    border-radius: 4px;
+  }
+  .skeleton-dark::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsla(0, 0%, 100%, 0.6) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+
+  /* ── PDF Viewer Overlay Styles ─────────────────────────── */
+  .pdf-page-container {
+    position: relative;
+    margin: 0 auto;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.10),
+                0 1px 4px rgba(0, 0, 0, 0.06);
+    background: white;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .pdf-page-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .pdf-text-layer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.25;
+    line-height: 1;
+  }
+  .pdf-text-layer span {
+    position: absolute;
+    white-space: pre;
+    color: transparent;
+    pointer-events: all;
+  }
+  .pdf-text-layer span::selection {
+    background: hsla(217, 91%, 50%, 0.3);
+  }
+
+  /* ── PDF Text Highlighting (Plagiarism & AI) ───────────── */
+  .pdf-text-layer span.pdf-highlight-plag {
+    background-color: hsla(0, 85%, 55%, 0.30) !important;
+    color: transparent !important;
+    opacity: 1 !important;
+    border-radius: 1px;
+    transition: background-color 0.2s ease;
+  }
+  .pdf-text-layer span.pdf-highlight-plag:hover {
+    background-color: hsla(0, 85%, 55%, 0.50) !important;
+  }
+  .pdf-text-layer span.pdf-highlight-ai {
+    background-color: hsla(217, 91%, 55%, 0.25) !important;
+    color: transparent !important;
+    opacity: 1 !important;
+    border-radius: 1px;
+    transition: background-color 0.2s ease;
+  }
+  .pdf-text-layer span.pdf-highlight-ai:hover {
+    background-color: hsla(217, 91%, 55%, 0.45) !important;
+  }
+
+  /* ── Page Break Visual ─────────────────────────────────── */
+  .page-break-indicator {
+    position: relative;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+  }
+  .page-break-indicator::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: repeating-linear-gradient(
+      90deg,
+      hsl(var(--border)) 0,
+      hsl(var(--border)) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+  }
+  .page-break-indicator span {
+    position: relative;
+    background: hsl(var(--background));
+    padding: 0 8px;
+    font-size: 10px;
+    color: hsl(var(--muted-foreground));
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ── Coming Soon Badge ─────────────────────────────────── */
+  .badge-coming-soon {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider;
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    letter-spacing: 0.05em;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Keyframes */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
