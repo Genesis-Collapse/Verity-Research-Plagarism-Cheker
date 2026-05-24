@@ -9,6 +9,7 @@ import {
   ArrowRight,
   CheckCircle2,
   Mail,
+  Github,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { AuthModal } from "../components/AuthModal";
@@ -36,11 +37,20 @@ export default function LandingPage() {
           {/* Nav */}
           <div className="flex items-center gap-4">
             <a
+              href="https://github.com/Genesis-Collapse/Verity-Research-Plagarism-Cheker"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
+            >
+              <Github className="w-4 h-4" />
+              Genesis-Collapse
+            </a>
+            <a
               href="mailto:ragingtempest20@gmail.com"
               className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
             >
               <Mail className="w-4 h-4" />
-              Contact Support
+              ragingtempest20@gmail.com
             </a>
             <button
               className="btn-primary text-sm px-4 py-2"
