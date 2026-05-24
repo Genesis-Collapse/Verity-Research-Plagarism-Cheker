@@ -115,6 +115,9 @@ export default function TermsOfService() {
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between text-sm text-muted-foreground">
           <span>© 2026 Verity. All rights reserved.</span>
           <div className="flex items-center gap-6">
+            <a href="https://github.com/Genesis-Collapse/Verity-Research-Plagarism-Cheker" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+              GitHub
+            </a>
             <a href="/privacy" className="hover:text-foreground transition-colors">
               Privacy Policy
             </a>
