@@ -3,12 +3,15 @@ import magic
 
 async def enforce_upload_guard(file: UploadFile):
     # Check file size (15MB max)
-    await file.seek(0, 2)
-    file_size = file.file.tell()
-    await file.seek(0)
-    
-    if file_size > 15 * 1024 * 1024:
-        raise HTTPException(status_code=413, detail="File too large. Max size is 15MB.")
+    if getattr(file, "size", None) is not None:
+        if file.size > 15 * 1024 * 1024:
+            raise HTTPException(status_code=413, detail="File too large. Max size is 15MB.")
+    else:
+        file.file.seek(0, 2)
+        file_size = file.file.tell()
+        file.file.seek(0)
+        if file_size > 15 * 1024 * 1024:
+            raise HTTPException(status_code=413, detail="File too large. Max size is 15MB.")
         
     # Check magic bytes for PDF signature
     header = await file.read(2048)

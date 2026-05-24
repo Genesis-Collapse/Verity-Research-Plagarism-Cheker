@@ -1,4 +1,4 @@
-// ─── Types for the Originality Engine ──────────────────────────────────────
+// ─── Types for Verity ──────────────────────────────────────
 
 export interface MatchInfo {
   title: string;
@@ -26,6 +26,8 @@ export interface ChunkResult {
   is_plagiarized: boolean;
   max_similarity: number;
   matches: MatchInfo[];
+  is_quote: boolean;
+  is_bibliography: boolean;
   sanitization: SanitizationInfo | null;
   error?: string;
 }

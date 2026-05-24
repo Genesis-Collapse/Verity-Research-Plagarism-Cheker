@@ -17,7 +17,7 @@ export default function PrivacyPolicy() {
               <Shield className="w-4.5 h-4.5 text-white" />
             </div>
             <span className="text-lg font-bold text-foreground tracking-tight">
-              Originality Engine
+              Verity
             </span>
           </button>
           <button
@@ -31,115 +31,74 @@ export default function PrivacyPolicy() {
       </header>
 
       {/* ── Content ────────────────────────────────────────────── */}
-      <main className="flex-1 max-w-3xl mx-auto px-6 py-16">
+      <main className="flex-1 max-w-4xl mx-auto px-6 py-16">
         <h1 className="text-3xl font-bold text-foreground mb-2">Privacy Policy</h1>
-        <p className="text-sm text-muted-foreground mb-10">Last updated: May 2026</p>
+        <p className="text-sm text-muted-foreground mb-10">Effective Date: May 25, 2026</p>
 
         <div className="space-y-8 text-[15px] leading-relaxed text-foreground/85">
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">1. Overview</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">1. Introduction and Scope</h2>
             <p>
-              Originality Engine is a free, open-source document analysis tool. We are committed to
-              protecting your privacy. This policy explains what data we collect (and don't collect)
-              when you use our software.
+              This Privacy Policy ("Policy") constitutes a legally binding agreement between you ("User", "You") and the operators of Verity ("Company", "We", "Us"). By accessing or utilizing the Verity software and services ("Services"), you expressly consent to the data collection, processing, and storage practices delineated herein. If you do not agree with these terms, you must immediately cease all use of the Services.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">2. Data Collection</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">2. Data Collection and Retention</h2>
             <p className="mb-3">
-              <strong>We do not store your documents permanently.</strong> When you upload a PDF for
-              analysis:
+              We operate on a strictly ephemeral processing model to ensure the privacy and sovereignty of your intellectual property:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-2">
-              <li>The document is processed entirely in memory during the analysis session.</li>
-              <li>Text is extracted, chunked, and analyzed in real-time.</li>
-              <li>Once the analysis is complete and your session ends, the uploaded document and
-                  extracted text are discarded from server memory.</li>
-              <li>No copy of your document is written to disk or retained in any database.</li>
+              <li>
+                <strong>Ephemeral Processing:</strong> Your document is processed ephemerally. The file is temporarily loaded into volatile server memory (RAM) strictly for the duration of the analysis session. Upon conclusion of the session, the document and all associated extracted text are permanently purged from memory. We retain no persistent copy of your document on any disk or database.
+              </li>
+              <li>
+                <strong>User Account Data:</strong> If you authenticate with our Services, we collect and store basic profile information (such as your User ID) necessary for session management.
+              </li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">3. Processing</h2>
-            <p className="mb-3">Analysis is performed using:</p>
+            <h2 className="text-lg font-semibold text-foreground mb-3">3. Processing Methodologies</h2>
+            <p className="mb-3">All analytical processing is conducted in accordance with the following protocols:</p>
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li>
-                <strong>Local ML Models:</strong> AI text detection uses a RoBERTa model that runs
-                entirely on the server hosting Originality Engine. No text is sent to OpenAI,
-                Google, or any other AI provider.
+                <strong>Proprietary Machine Learning Models:</strong> Artificial Intelligence (AI) authorship detection and semantic similarity scoring are executed utilizing localized inference models (e.g., RoBERTa and SentenceTransformer variants).
               </li>
               <li>
-                <strong>Semantic Similarity:</strong> Text embeddings are computed using a
-                SentenceTransformer model running locally. No embeddings are stored after the session.
-              </li>
-              <li>
-                <strong>Text Sanitization:</strong> Unicode normalization and zero-width character
-                removal are performed locally in memory.
+                <strong>Third-Party Vendor Exclusion:</strong> Your verbatim text is never transmitted to third-party generative AI providers (e.g., OpenAI, Anthropic, or Google) for analysis.
               </li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">4. Third-Party APIs</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">4. Third-Party Integrations and Data Sharing</h2>
             <p className="mb-3">
-              To perform plagiarism checks, we query the following public academic databases:
+              To facilitate comprehensive academic integrity verification, the Services interface with external, publicly accessible academic databases including, but not limited to, OpenAlex, Crossref, Semantic Scholar, and CORE.
             </p>
-            <ul className="list-disc list-inside space-y-2 ml-2">
-              <li>
-                <strong>OpenAlex</strong> (openalex.org) — Open academic metadata.
-                We send extracted keywords, not your full text.
-              </li>
-              <li>
-                <strong>Crossref</strong> (crossref.org) — DOI and publication metadata.
-                We send extracted keywords, not your full text.
-              </li>
-              <li>
-                <strong>Semantic Scholar</strong> (semanticscholar.org) — Academic paper search.
-                We send extracted keywords, not your full text.
-              </li>
-              <li>
-                <strong>CORE</strong> (core.ac.uk) — Open access research outputs.
-                We send extracted keywords, not your full text.
-              </li>
-            </ul>
             <p className="mt-3">
-              These services receive only short keyword queries derived from your document — never
-              the full document text. Please refer to each service's own privacy policy for their
-              data handling practices.
+              We transmit solely extracted, anonymized keyword strings to these third-party Application Programming Interfaces (APIs). Under no circumstances is the complete corpus of your submitted document transmitted to these external entities. Your data is subject to the respective privacy policies and terms of service of these third-party vendors.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">5. Cookies & Tracking</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">5. Disclaimer of Warranties and Limitation of Liability</h2>
             <p>
-              Originality Engine does not use cookies, analytics trackers, or any form of user
-              tracking. There are no ads, no telemetry, and no third-party tracking scripts.
+              While we implement industry-standard cryptographic and security protocols to safeguard your data, no method of transmission over the Internet or electronic storage is completely secure. We disclaim all liability for unauthorized access, data breaches, or inadvertent disclosures to the maximum extent permitted by applicable law.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">6. Your Rights</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">6. User Rights and Data Subject Requests</h2>
             <p>
-              Since we do not store any personal data or documents, there is nothing to delete.
-              You can use Originality Engine without creating an account, providing an email, or
-              identifying yourself in any way.
+              Pursuant to applicable data protection regulations, you reserve the right to request access to, or deletion of, your personal data stored within our internal repositories. Such requests must be submitted in writing. We reserve the right to verify your identity prior to executing any data subject request.
             </p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">7. Changes to This Policy</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">7. Modifications to Policy</h2>
             <p>
-              We may update this privacy policy from time to time. Any changes will be reflected on
-              this page with an updated "Last updated" date.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-semibold text-foreground mb-3">8. Contact</h2>
-            <p>
-              If you have questions about this privacy policy, please open an issue on the project's
-              GitHub repository.
+              We reserve the unilateral right to amend, modify, or revise this Policy at any time. Continued utilization of the Services following any such modification constitutes your binding acceptance of the revised Policy.
             </p>
           </section>
         </div>
@@ -148,7 +107,7 @@ export default function PrivacyPolicy() {
       {/* ── Footer ─────────────────────────────────────────────── */}
       <footer className="border-t border-border/40 bg-white py-6">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between text-sm text-muted-foreground">
-          <span>© 2026 Originality Engine. All rights reserved.</span>
+          <span>© 2026 Verity. All rights reserved.</span>
           <div className="flex items-center gap-6">
             <a href="/privacy" className="hover:text-foreground transition-colors font-medium text-foreground">
               Privacy Policy

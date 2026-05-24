@@ -63,7 +63,7 @@ export default function DownloadMenu({ onClose, chunks, file, stats }: DownloadM
     {
       icon: FileText,
       label: "Current View",
-      description: "PDF report with highlights & sources",
+      description: "PDF snapshot of the highlighted document",
       id: "download-current-view",
       onClick: handleCurrentView,
       disabled: chunks.length === 0,

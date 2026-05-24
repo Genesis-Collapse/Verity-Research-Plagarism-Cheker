@@ -37,6 +37,8 @@ const mockDocumentChunks: ChunkResult[] = [
     is_plagiarized: false,
     max_similarity: 0.32,
     matches: [],
+    is_quote: false,
+    is_bibliography: false,
     sanitization: mockSanitization,
   },
   {
@@ -65,6 +67,8 @@ const mockDocumentChunks: ChunkResult[] = [
         similarity: 0.76,
       },
     ],
+    is_quote: false,
+    is_bibliography: false,
     sanitization: null,
   },
   {
@@ -78,6 +82,8 @@ const mockDocumentChunks: ChunkResult[] = [
     is_plagiarized: false,
     max_similarity: 0.41,
     matches: [],
+    is_quote: false,
+    is_bibliography: false,
     sanitization: null,
   },
   {
@@ -99,6 +105,8 @@ const mockDocumentChunks: ChunkResult[] = [
         similarity: 0.78,
       },
     ],
+    is_quote: false,
+    is_bibliography: false,
     sanitization: null,
   },
   {
@@ -112,6 +120,8 @@ const mockDocumentChunks: ChunkResult[] = [
     is_plagiarized: false,
     max_similarity: 0.28,
     matches: [],
+    is_quote: false,
+    is_bibliography: false,
     sanitization: null,
   },
   {
@@ -147,6 +157,8 @@ const mockDocumentChunks: ChunkResult[] = [
         similarity: 0.77,
       },
     ],
+    is_quote: false,
+    is_bibliography: false,
     sanitization: null,
   },
 ];

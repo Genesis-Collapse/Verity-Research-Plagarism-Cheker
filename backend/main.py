@@ -39,53 +39,66 @@ _ai_models = None  # Dict with classifier + perplexity models
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Load ML models on startup, release on shutdown."""
+    """Load ML models on startup in the background, release on shutdown."""
     global _sentence_model, _ai_models
 
     logger.info("=" * 60)
-    logger.info("LOADING ML MODELS — this may take a minute on first run...")
+    logger.info("STARTING ML MODEL LOADING IN BACKGROUND...")
+    logger.info("Server will accept requests, but return 503 until models are ready.")
     logger.info("=" * 60)
 
-    # 1. Load SentenceTransformer for semantic similarity
-    logger.info("Loading SentenceTransformer (all-MiniLM-L6-v2)...")
-    from sentence_transformers import SentenceTransformer
-    _sentence_model = SentenceTransformer("all-MiniLM-L6-v2")
-    logger.info("✓ SentenceTransformer loaded")
+    def load_models():
+        global _sentence_model, _ai_models
+        try:
+            # 1. Load SentenceTransformer for semantic similarity
+            logger.info("Loading SentenceTransformer (all-MiniLM-L6-v2)...")
+            from sentence_transformers import SentenceTransformer
+            loaded_sentence_model = SentenceTransformer("all-MiniLM-L6-v2")
+            logger.info("✓ SentenceTransformer loaded")
 
-    # 2. Load the modern AI classifier: Hello-SimpleAI/chatgpt-detector-roberta
-    logger.info("Loading AI Classifier (Hello-SimpleAI/chatgpt-detector-roberta)...")
-    from transformers import AutoTokenizer, AutoModelForSequenceClassification, AutoModelForCausalLM
-    classifier_tokenizer = AutoTokenizer.from_pretrained("Hello-SimpleAI/chatgpt-detector-roberta")
-    classifier_model = AutoModelForSequenceClassification.from_pretrained(
-        "Hello-SimpleAI/chatgpt-detector-roberta"
-    )
-    classifier_model.eval()
-    logger.info("✓ AI Classifier loaded")
+            # 2. Load the modern AI classifier: Hello-SimpleAI/chatgpt-detector-roberta
+            logger.info("Loading AI Classifier (Hello-SimpleAI/chatgpt-detector-roberta)...")
+            from transformers import AutoTokenizer, AutoModelForSequenceClassification, AutoModelForCausalLM
+            classifier_tokenizer = AutoTokenizer.from_pretrained("Hello-SimpleAI/chatgpt-detector-roberta")
+            classifier_model = AutoModelForSequenceClassification.from_pretrained(
+                "Hello-SimpleAI/chatgpt-detector-roberta"
+            )
+            classifier_model.eval()
+            logger.info("✓ AI Classifier loaded")
 
-    # 3. Load distilgpt2 for perplexity scoring
-    logger.info("Loading Perplexity Model (distilgpt2)...")
-    perplexity_tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
-    perplexity_model = AutoModelForCausalLM.from_pretrained("distilgpt2")
-    perplexity_model.eval()
-    logger.info("✓ Perplexity Model loaded")
+            # 3. Load distilgpt2 for perplexity scoring
+            logger.info("Loading Perplexity Model (distilgpt2)...")
+            perplexity_tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
+            perplexity_model = AutoModelForCausalLM.from_pretrained("distilgpt2")
+            perplexity_model.eval()
+            logger.info("✓ Perplexity Model loaded")
 
-    # 4. Download NLTK data for sentence tokenization
-    logger.info("Downloading NLTK punkt_tab tokenizer...")
-    import nltk
-    nltk.download("punkt_tab", quiet=True)
-    logger.info("✓ NLTK punkt_tab downloaded")
+            # 4. Download NLTK data for sentence tokenization
+            logger.info("Downloading NLTK punkt_tab tokenizer...")
+            import nltk
+            nltk.download("punkt_tab", quiet=True)
+            logger.info("✓ NLTK punkt_tab downloaded")
 
-    # Pack all AI models into a dict for scanner.py
-    _ai_models = {
-        "classifier_tokenizer": classifier_tokenizer,
-        "classifier_model": classifier_model,
-        "perplexity_tokenizer": perplexity_tokenizer,
-        "perplexity_model": perplexity_model,
-    }
+            # Pack all AI models into a dict for scanner.py
+            loaded_ai_models = {
+                "classifier_tokenizer": classifier_tokenizer,
+                "classifier_model": classifier_model,
+                "perplexity_tokenizer": perplexity_tokenizer,
+                "perplexity_model": perplexity_model,
+            }
 
-    logger.info("=" * 60)
-    logger.info("ALL MODELS LOADED — Server ready!")
-    logger.info("=" * 60)
+            # Assign to globals only when fully loaded
+            _sentence_model = loaded_sentence_model
+            _ai_models = loaded_ai_models
+
+            logger.info("=" * 60)
+            logger.info("ALL MODELS LOADED — Ready for analysis!")
+            logger.info("=" * 60)
+        except Exception as e:
+            logger.error(f"Failed to load models: {e}")
+
+    import asyncio
+    asyncio.create_task(asyncio.to_thread(load_models))
 
     yield
 
@@ -98,7 +111,7 @@ async def lifespan(app: FastAPI):
 # ─── FastAPI App ────────────────────────────────────────────────────────────
 
 app = FastAPI(
-    title="The Originality Engine",
+    title="Verity",
     description="Federated plagiarism & AI-text detection engine",
     version="2.0.0",
     lifespan=lifespan,
@@ -146,7 +159,7 @@ async def health():
 # ─── Scan Endpoint (SSE Streaming) ─────────────────────────────────────────
 
 @app.post("/api/scan")
-@limiter.limit("5/hour")
+@limiter.limit("100/minute")
 async def scan(
     request: Request,
     file: UploadFile = File(...),

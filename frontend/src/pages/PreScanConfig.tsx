@@ -14,6 +14,7 @@ import {
   BookOpen,
   Building2,
   ArrowLeft,
+  Database,
 } from "lucide-react";
 import type { ScanConfig } from "@/types";
 import { useAuth } from "../contexts/AuthContext";
@@ -32,7 +33,7 @@ export default function PreScanConfig() {
     searchJournals: true,
     searchInstitution: true,
     institutionName: "",
-    submitTo: "standard",
+    submitTo: "none",
   });
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -183,35 +184,7 @@ export default function PreScanConfig() {
               </div>
             </div>
 
-            {/* Submit to repo */}
-            <div className="mt-8 pt-6 border-t border-border/50">
-              <label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
-                Submit papers to:
-                <span
-                  className="w-4 h-4 rounded-full bg-primary/10 text-primary text-[10px] flex items-center justify-center font-bold"
-                  title="Select the repository where submitted papers will be stored for future matching."
-                >
-                  ?
-                </span>
-              </label>
-              <div className="relative w-64">
-                <select
-                  value={config.submitTo}
-                  onChange={(e) =>
-                    setConfig((prev) => ({
-                      ...prev,
-                      submitTo: e.target.value as "standard" | "none",
-                    }))
-                  }
-                  className="w-full appearance-none px-4 py-2.5 rounded-md border border-border bg-white text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 cursor-pointer pr-10"
-                  id="submit-to-select"
-                >
-                  <option value="standard">standard paper repository</option>
-                  <option value="none">no repository</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-              </div>
-            </div>
+
           </div>
 
           {/* ── Upload Zone ──────────────────────────────────────── */}

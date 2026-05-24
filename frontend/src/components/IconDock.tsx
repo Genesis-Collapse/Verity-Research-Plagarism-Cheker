@@ -47,7 +47,7 @@ export default function IconDock({
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
   return (
-    <div className="flex flex-col items-center py-3 gap-2 h-full overflow-y-auto custom-scrollbar">
+    <div className="flex flex-col items-center py-3 gap-2 h-full custom-scrollbar">
       {/* ── Similarity Score (RED) ────────────────────────────── */}
       <DockIcon
         tooltip="Copied Content Report — Click to view sources"

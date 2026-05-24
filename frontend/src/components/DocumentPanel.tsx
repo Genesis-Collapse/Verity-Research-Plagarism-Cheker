@@ -109,6 +109,8 @@ function TextChunkView({
     aiProb: number;
     maxSim: number;
     hasCitations: boolean;
+    isQuote: boolean;
+    isBibliography: boolean;
   }>;
   activeChunkIndex: number | null;
   onChunkClick: (index: number) => void;
@@ -151,18 +153,23 @@ function TextChunkView({
                 );
               }
 
-              // Mock filter application
+              // Backend filter flags
               let showCopied = chunk.isPlagiarized;
-              if (excludeQuotes && chunk.maxSim > 0.8) showCopied = false;
-              if (excludeBibliography && chunk.maxSim > 0.7 && chunk.maxSim <= 0.8)
-                showCopied = false;
+              if (excludeQuotes && chunk.isQuote) showCopied = false;
+              if (excludeBibliography && chunk.isBibliography) showCopied = false;
 
               // Filter mode logic
-              const showPlagiarism =
-                filterMode === "all" || filterMode === "plagiarism-only";
+              const showPlagiarism = filterMode === "all" || filterMode === "plagiarism-only";
               const showAI = filterMode === "all" || filterMode === "ai-only";
 
-              if (showCopied && showPlagiarism) {
+              if (showCopied && showPlagiarism && (!chunk.isAI || filterMode === "plagiarism-only" || !showAI)) {
+                highlightClass = "highlight-plagiarism";
+                tooltipText = `Possible Copied Content: ${Math.round(chunk.maxSim * 100)}% similarity`;
+              } else if (chunk.isAI && showAI && (!showCopied || filterMode === "ai-only" || !showPlagiarism)) {
+                highlightClass = "highlight-ai";
+                tooltipText = `AI-Generated: ${Math.round(chunk.aiProb * 100)}% probability`;
+              } else if (showCopied && showPlagiarism) {
+                // If both are true but the priority went to AI (which shouldn't happen with the strict checks above, but just in case)
                 highlightClass = "highlight-plagiarism";
                 tooltipText = `Possible Copied Content: ${Math.round(chunk.maxSim * 100)}% similarity`;
               } else if (chunk.isAI && showAI) {
@@ -223,6 +230,8 @@ export default function DocumentPanel({
       aiProb: r.ai_probability,
       maxSim: r.max_similarity,
       hasCitations: /(\[[\d,\s]+\]|\([A-Za-z\s]+,\s\d{4}\)|et al\.)/.test(r.full_text),
+      isQuote: r.is_quote || false,
+      isBibliography: r.is_bibliography || false,
     }));
   }, [chunks]);
 

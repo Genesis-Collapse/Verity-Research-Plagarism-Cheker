@@ -8,6 +8,7 @@
  */
 
 import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 import type { ChunkResult } from "@/types";
 
 // ─── SHA-256 File Hash ────────────────────────────────────────────────────
@@ -38,18 +39,17 @@ export async function generateReport(
 ): Promise<void> {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 20;
-  const contentWidth = pageWidth - margin * 2;
-  let y = margin;
 
-  // ── Header ──
+  // ── Header Page ──
   doc.setFillColor(24, 70, 139); // primary blue
   doc.rect(0, 0, pageWidth, 40, "F");
 
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(20);
   doc.setFont("helvetica", "bold");
-  doc.text("Originality Engine", margin, 18);
+  doc.text("Verity", margin, 18);
 
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
@@ -58,7 +58,7 @@ export async function generateReport(
     year: "numeric", month: "long", day: "numeric"
   }), pageWidth - margin, 28, { align: "right" });
 
-  y = 55;
+  let y = 55;
 
   // ── File Info ──
   doc.setTextColor(60, 60, 60);
@@ -72,7 +72,7 @@ export async function generateReport(
 
   // ── Score Summary ──
   doc.setFillColor(248, 250, 252);
-  doc.roundedRect(margin, y, contentWidth, 30, 3, 3, "F");
+  doc.roundedRect(margin, y, pageWidth - margin * 2, 30, 3, 3, "F");
 
   // Plagiarism Score
   doc.setFontSize(24);
@@ -104,74 +104,36 @@ export async function generateReport(
 
   y += 40;
 
-  // ── Per-Chunk Results ──
-  doc.setFontSize(14);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(30, 30, 30);
-  doc.text("Detailed Results", margin, y);
-  y += 8;
-
-  for (const chunk of chunks) {
-    // Check if we need a new page
-    if (y > 250) {
+  // ── Capture Highlighted Pages ──
+  const pageElements = Array.from(document.querySelectorAll('.pdf-page-container')) as HTMLElement[];
+  
+  if (pageElements.length > 0) {
+    for (let i = 0; i < pageElements.length; i++) {
       doc.addPage();
-      y = margin;
-    }
-
-    const isPlagiarized = chunk.is_plagiarized;
-    const isAI = chunk.ai_probability > 0.5;
-
-    // Chunk header bar
-    if (isPlagiarized) {
-      doc.setFillColor(254, 242, 242); // red bg
-      doc.setDrawColor(220, 38, 38);
-    } else if (isAI) {
-      doc.setFillColor(239, 246, 255); // blue bg
-      doc.setDrawColor(37, 99, 235);
-    } else {
-      doc.setFillColor(248, 250, 252); // grey bg
-      doc.setDrawColor(200, 200, 200);
-    }
-
-    doc.roundedRect(margin, y, contentWidth, 8, 1, 1, "FD");
-
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(60, 60, 60);
-    doc.text(`Segment ${chunk.chunk_index + 1} / ${chunk.total_chunks}`, margin + 3, y + 5.5);
-
-    // Labels
-    const labels: string[] = [];
-    if (isPlagiarized) labels.push(`Plagiarism: ${Math.round(chunk.max_similarity * 100)}%`);
-    if (isAI) labels.push(`AI: ${Math.round(chunk.ai_probability * 100)}%`);
-    if (labels.length === 0) labels.push("Clean");
-
-    doc.text(labels.join(" · "), pageWidth - margin - 3, y + 5.5, { align: "right" });
-    y += 10;
-
-    // Chunk text
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(80, 80, 80);
-    const textLines = doc.splitTextToSize(chunk.full_text || chunk.text, contentWidth - 6);
-    const maxLines = Math.min(textLines.length, 6);
-    doc.text(textLines.slice(0, maxLines), margin + 3, y + 4);
-    y += maxLines * 4 + 4;
-
-    // Sources
-    if (chunk.matches.length > 0) {
-      doc.setFontSize(7);
-      doc.setFont("helvetica", "italic");
-      doc.setTextColor(140, 140, 140);
-      for (const match of chunk.matches.slice(0, 3)) {
-        if (y > 270) { doc.addPage(); y = margin; }
-        const sourceText = `→ ${match.title} (${match.source}, ${Math.round(match.similarity * 100)}%)`;
-        doc.text(sourceText, margin + 6, y + 3);
-        y += 4;
+      const el = pageElements[i];
+      
+      const canvas = await html2canvas(el, { scale: 2, useCORS: true, logging: false });
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      
+      const imgRatio = canvas.width / canvas.height;
+      
+      let renderWidth = pageWidth;
+      let renderHeight = pageWidth / imgRatio;
+      
+      if (renderHeight > pageHeight) {
+        renderHeight = pageHeight;
+        renderWidth = pageHeight * imgRatio;
       }
+      
+      const xOffset = (pageWidth - renderWidth) / 2;
+      const yOffset = (pageHeight - renderHeight) / 2;
+      
+      doc.addImage(imgData, 'JPEG', xOffset, yOffset, renderWidth, renderHeight);
     }
-
-    y += 4;
+  } else {
+    doc.addPage();
+    doc.setFontSize(12);
+    doc.text("No document preview available to capture.", margin, margin);
   }
 
   // ── Footer ──
@@ -181,7 +143,7 @@ export async function generateReport(
     doc.setFontSize(7);
     doc.setTextColor(160, 160, 160);
     doc.text(
-      `Generated by Originality Engine · Page ${i} of ${totalPages}`,
+      `Generated by Verity · Page ${i} of ${totalPages}`,
       pageWidth / 2, 290, { align: "center" }
     );
   }
@@ -216,7 +178,7 @@ export async function generateReceipt(
     const yStart = 40 + i * 55;
 
     doc.text(
-      "ORIGINALITY ENGINE — VERIFIED",
+      "VERITY — VERIFIED",
       xStart, yStart,
       { angle: 35 }
     );
@@ -235,7 +197,7 @@ export async function generateReceipt(
   doc.text("Digital Receipt", margin, 16);
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
-  doc.text("Originality Engine — Document Verification", margin, 26);
+  doc.text("Verity — Document Verification", margin, 26);
 
   y = 50;
 
@@ -291,7 +253,7 @@ export async function generateReceipt(
   doc.setFont("helvetica", "normal");
   doc.setTextColor(120, 120, 120);
   const verifyText = doc.splitTextToSize(
-    "This receipt confirms that the above document was submitted to Originality Engine for analysis. " +
+    "This receipt confirms that the above document was submitted to Verity for analysis. " +
     "The SHA-256 hash uniquely identifies the exact file that was scanned. " +
     "To verify this receipt, re-upload the same file and compare the hash values.",
     pageWidth - margin * 2 - 10
@@ -300,7 +262,7 @@ export async function generateReceipt(
 
   // ── Embed C2PA-style metadata in PDF properties ──
   const metadata = {
-    tool: "Originality Engine v1.0",
+    tool: "Verity v1.0",
     timestamp: new Date().toISOString(),
     file_name: file.name,
     file_sha256: fileHash,
@@ -316,10 +278,10 @@ export async function generateReceipt(
 
   doc.setProperties({
     title: `Digital Receipt — ${file.name}`,
-    subject: "Originality Engine Document Verification Receipt",
-    author: "Originality Engine v1.0",
+    subject: "Verity Document Verification Receipt",
+    author: "Verity v1.0",
     keywords: `sha256:${fileHash}`,
-    creator: "Originality Engine",
+    creator: "Verity",
   });
 
   // Embed the C2PA-style JSON as a text annotation (machine-readable)
@@ -331,7 +293,7 @@ export async function generateReceipt(
   doc.setFontSize(7);
   doc.setTextColor(160, 160, 160);
   doc.text(
-    "Generated by Originality Engine · This receipt is for verification purposes only",
+    "Generated by Verity · This receipt is for verification purposes only",
     pageWidth / 2, pageHeight - 10, { align: "center" }
   );
 

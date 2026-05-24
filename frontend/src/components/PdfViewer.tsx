@@ -257,19 +257,21 @@ export default function PdfViewer({
       let showAi =
         isAI && (filterMode === "all" || filterMode === "ai-only");
 
-      if (excludeQuotes && chunk.max_similarity > 0.8) showPlag = false;
-      if (
-        excludeBibliography &&
-        chunk.max_similarity > 0.7 &&
-        chunk.max_similarity <= 0.8
-      )
-        showPlag = false;
+      if (excludeQuotes && chunk.is_quote) showPlag = false;
+      if (excludeBibliography && chunk.is_bibliography) showPlag = false;
 
       if (!showPlag && !showAi) continue;
 
-      const highlightClass = showPlag
-        ? "pdf-highlight-plag"
-        : "pdf-highlight-ai";
+      let highlightClass = "pdf-highlight-plag";
+      if (showPlag && (!isAI || filterMode === "plagiarism-only" || !showAi)) {
+        highlightClass = "pdf-highlight-plag";
+      } else if (showAi && (!isPlagiarized || filterMode === "ai-only" || !showPlag)) {
+        highlightClass = "pdf-highlight-ai";
+      } else if (showPlag) {
+        highlightClass = "pdf-highlight-plag";
+      } else if (showAi) {
+        highlightClass = "pdf-highlight-ai";
+      }
 
       // Search across all text layers to find matching spans
       const textToSearch = chunk.full_text || chunk.text;

@@ -13,7 +13,7 @@ import DownloadMenu from "@/components/DownloadMenu";
 import { computeMockStats } from "@/data/mockData";
 import type { ChunkResult, ScanStatus, FilterMode, ScanConfig } from "@/types";
 import { useAuth } from "../contexts/AuthContext";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../lib/firebase";
 
 export default function FeedbackStudio() {
@@ -78,7 +78,8 @@ export default function FeedbackStudio() {
       }
 
       try {
-        const response = await fetch("/api/scan", {
+        const apiUrl = import.meta.env.VITE_API_URL || "";
+        const response = await fetch(`${apiUrl}/api/scan`, {
           method: "POST",
           body: formData,
           signal: abortController.signal,
@@ -111,15 +112,7 @@ export default function FeedbackStudio() {
               const dataStr = event.slice(6);
               if (dataStr === "[DONE]") {
                 setScanStatus("complete");
-                if (scanConfig?.submitTo === "standard") {
-                  const fullText = localChunks.map(c => c.text || c.full_text).join(" ");
-                  addDoc(collection(db, "submissions"), {
-                    title: validFile.name,
-                    timestamp: new Date().toISOString(),
-                    text: fullText,
-                    userId: currentUser?.uid || "anonymous"
-                  }).catch(console.error);
-                }
+
                 return;
               }
 

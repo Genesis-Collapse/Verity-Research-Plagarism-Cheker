@@ -51,6 +51,9 @@ class ChunkResult:
     is_plagiarized: bool
     max_similarity: float
     matches: list[MatchInfo] = field(default_factory=list)
+    # Filters
+    is_quote: bool = False
+    is_bibliography: bool = False
     # Sanitization report for the first chunk
     sanitization: Optional[dict] = None
 
@@ -74,6 +77,8 @@ class ChunkResult:
                 }
                 for m in self.matches
             ],
+            "is_quote": self.is_quote,
+            "is_bibliography": self.is_bibliography,
             "sanitization": self.sanitization,
         }
 
@@ -225,9 +230,22 @@ async def scan_document(
     perplexity_tokenizer = ai_models["perplexity_tokenizer"]
     perplexity_model = ai_models["perplexity_model"]
 
+    bibliography_started = False
+
     # Step 4: Analyze each chunk
     for i, chunk in enumerate(chunks):
         logger.info(f"Analyzing chunk {i + 1}/{total_chunks}...")
+
+        # Update bibliography state
+        if not bibliography_started:
+            if re.search(r'(?i)\n(references|bibliography|works cited)\s*\n', chunk) or \
+               re.match(r'(?i)^(references|bibliography|works cited)\s*\n', chunk):
+                bibliography_started = True
+        
+        # Calculate quote percentage
+        quote_matches = re.findall(r'"([^"]*)"|“([^”]*)”|\'([^\']*)\'', chunk)
+        quoted_text = "".join([m for t in quote_matches for m in t if m])
+        is_quote = (len(quoted_text) / len(chunk) > 0.3) if len(chunk) > 0 else False
 
         # Get the search task for the current chunk
         search_task = next_search_task
@@ -312,5 +330,7 @@ async def scan_document(
             is_plagiarized=len(matches) > 0,
             max_similarity=max_sim,
             matches=matches,
+            is_quote=is_quote,
+            is_bibliography=bibliography_started,
             sanitization=sanitization_info if i == 0 else None,
         )
