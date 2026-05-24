@@ -33,7 +33,7 @@ interface ReportStats {
 // ─── Generate Full Analysis Report ────────────────────────────────────────
 
 export async function generateReport(
-  chunks: ChunkResult[],
+  _chunks: ChunkResult[],
   stats: ReportStats,
   fileName: string
 ): Promise<void> {

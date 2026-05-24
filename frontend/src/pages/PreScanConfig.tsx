@@ -8,13 +8,11 @@ import {
   FileText,
   X,
   Loader2,
-  ChevronDown,
   Globe,
   Users,
   BookOpen,
   Building2,
   ArrowLeft,
-  Database,
 } from "lucide-react";
 import type { ScanConfig } from "@/types";
 import { useAuth } from "../contexts/AuthContext";
