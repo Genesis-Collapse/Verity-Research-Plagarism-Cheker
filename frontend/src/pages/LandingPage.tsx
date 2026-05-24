@@ -35,13 +35,13 @@ export default function LandingPage() {
 
           {/* Nav */}
           <div className="flex items-center gap-4">
-            <button
+            <a
+              href="mailto:ragingtempest20@gmail.com"
               className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
-              onClick={() => {}}
             >
               <Mail className="w-4 h-4" />
               Contact Support
-            </button>
+            </a>
             <button
               className="btn-primary text-sm px-4 py-2"
               onClick={() => currentUser ? logout() : setShowAuthModal(true)}
