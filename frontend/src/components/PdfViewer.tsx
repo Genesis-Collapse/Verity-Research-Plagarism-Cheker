@@ -13,7 +13,7 @@
  * - Uses IntersectionObserver purely for page tracking, not lazy loading.
  */
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as pdfjsLib from "pdfjs-dist";
 import { TextLayer } from "pdfjs-dist";
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
@@ -102,8 +102,6 @@ export default function PdfViewer({
   ignoreCitations,
   excludeQuotes,
   excludeBibliography,
-  activeChunkIndex,
-  onChunkClick,
   currentPage,
   onPageCountChange,
   onPageChange,
@@ -192,7 +190,7 @@ export default function PdfViewer({
           pageContainer.appendChild(canvas);
 
           // Render the page to canvas
-          await page.render({ canvasContext: context, viewport }).promise;
+          await page.render({ canvasContext: context, viewport } as any).promise;
 
           // Create text layer for selection + highlighting
           const textLayerDiv = document.createElement("div");

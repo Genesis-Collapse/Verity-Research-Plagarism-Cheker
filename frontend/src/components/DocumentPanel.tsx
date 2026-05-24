@@ -202,7 +202,6 @@ export default function DocumentPanel({
   chunks,
   activeChunkIndex,
   onChunkClick,
-  activePanel,
   filterMode,
   excludeQuotes,
   excludeBibliography,

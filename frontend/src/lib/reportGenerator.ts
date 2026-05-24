@@ -193,7 +193,7 @@ export async function generateReport(
 // ─── Generate Digital Receipt ─────────────────────────────────────────────
 
 export async function generateReceipt(
-  chunks: ChunkResult[],
+  _chunks: ChunkResult[],
   stats: ReportStats,
   file: File
 ): Promise<void> {
