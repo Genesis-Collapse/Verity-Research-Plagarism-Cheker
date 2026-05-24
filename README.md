@@ -6,9 +6,11 @@
 ![Python](https://img.shields.io/badge/Python_3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-An enterprise-grade, deterministic academic integrity platform designed to detect semantic duplicity and AI-generated content in research proposals. 
+A privacy-first, deterministic originality scanner for independent researchers, students, and writers. 
 
-Built specifically to address the **University Grants Commission (UGC)** problem statement for the **Smart India Hackathon (SIH 2022)**, Verity serves as an authoritative, open-source alternative to proprietary software like Turnitin. It prioritizes zero-retention data privacy, robust statistical analysis, and a massive federated search network.
+Verity is designed to be your final pre-submission checkpoint. Before you submit your thesis, grant proposal, or research paper, Verity cross-references your work against 8 global data lakes and runs it through a hybrid AI-detection engine—all while guaranteeing 100% zero-retention data privacy for your unpublished intellectual property.
+
+Built specifically to address the **University Grants Commission (UGC)** problem statement for the **Smart India Hackathon (SIH 2022)**, Verity serves as an authoritative, open-source alternative to proprietary software like Turnitin. 
 
 ---
 
