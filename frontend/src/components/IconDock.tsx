@@ -171,7 +171,7 @@ export default function IconDock({
 
       {/* ── Document Info (GREY) ─────────────────────────────── */}
       <DockIcon
-        tooltip="Submission Details"
+        tooltip="Document Details"
         active={false}
         onClick={onOpenInfo}
         variant="grey"
