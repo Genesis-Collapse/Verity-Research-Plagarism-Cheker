@@ -41,7 +41,7 @@ export default function FeedbackStudio() {
     pageCount: 0,
     wordCount: 0,
     characterCount: 0,
-    userName: "User",
+    userName: currentUser?.displayName || currentUser?.email || "User",
   });
 
   useEffect(() => {
@@ -227,7 +227,7 @@ export default function FeedbackStudio() {
           {/* User label */}
           <div className="h-6 w-px bg-border/60 ml-2" />
           <span className="text-sm font-semibold text-foreground">
-            {currentUser?.email || "User"}
+            {currentUser?.displayName || currentUser?.email || "User"}
           </span>
         </div>
 

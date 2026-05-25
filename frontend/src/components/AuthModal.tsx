@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
       if (isLogin) {
         await signIn(email, password);
       } else {
-        await signUp(email, password);
+        await signUp(email, password, username);
       }
       onClose();
     } catch (err: any) {
@@ -74,6 +75,18 @@ export function AuthModal({ isOpen, onClose }: { isOpen: boolean; onClose: () =>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLogin && (
+              <div>
+                <label className="block mb-2 text-sm font-medium text-zinc-300">Username</label>
+                <input
+                  type="text"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            )}
             <div>
               <label className="block mb-2 text-sm font-medium text-zinc-300">Email</label>
               <input
