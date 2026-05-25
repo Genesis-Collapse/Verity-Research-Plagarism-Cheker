@@ -1,3 +1,12 @@
+---
+title: Verity Backend
+emoji: 🚀
+colorFrom: blue
+colorTo: red
+sdk: docker
+pinned: false
+---
+
 # 🛡️ Verity | The Open-Source Originality Engine
 
 ![Status: Active](https://img.shields.io/badge/Status-Active_Development-success?style=for-the-badge)
