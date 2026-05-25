@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Shield, Search, Bot, Database, Server, Lock, Github, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Shield, Search, Bot, Database, Lock, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function InfoPage() {
