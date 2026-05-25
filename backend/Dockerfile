@@ -1,10 +1,17 @@
 FROM python:3.9-slim
 
 # Install system dependencies required for PyMuPDF and other packages
+# RUN apt-get update && apt-get install -y \
+#     build-essential \
+#     libffi-dev \
+#     libmupdf-dev \
+#     && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update && apt-get install -y \
     build-essential \
     libffi-dev \
     libmupdf-dev \
+    libmagic1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
