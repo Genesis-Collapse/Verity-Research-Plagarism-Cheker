@@ -33,7 +33,7 @@ export default function FeedbackStudio() {
   const [totalPages, setTotalPages] = useState(0);
 
   const [details, setDetails] = useState({
-    submissionId: "N/A",
+    encryptionId: file ? `ENC-${crypto.randomUUID().split('-')[0].toUpperCase()}-${Date.now().toString(16).toUpperCase()}` : "N/A",
     dateTime: new Date().toLocaleString(),
     fileName: file?.name || "Unknown",
     fileExtension: file?.name.split('.').pop() || "pdf",

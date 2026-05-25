@@ -13,7 +13,7 @@ export default function SubmissionDetailsModal({
 }: SubmissionDetailsModalProps) {
   const rows: [string, string][] = [
     ["User", details.userName],
-    ["Submission ID", details.submissionId],
+    ["Encryption ID", details.encryptionId],
     ["Submission Date", details.dateTime],
     ["File Name", details.fileName],
     ["File Extension", details.fileExtension],
@@ -51,7 +51,7 @@ export default function SubmissionDetailsModal({
               Info
             </p>
             <h2 className="text-lg font-semibold text-foreground">
-              Submission Details
+              Document Details
             </h2>
           </div>
           <button

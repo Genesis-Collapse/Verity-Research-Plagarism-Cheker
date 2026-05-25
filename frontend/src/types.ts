@@ -42,7 +42,7 @@ export type ScanStatus =
 // ─── New Types for the Refactored UI ───────────────────────────────────────
 
 export interface SubmissionDetails {
-  submissionId: string;
+  encryptionId: string;
   dateTime: string;
   fileName: string;
   fileExtension: string;

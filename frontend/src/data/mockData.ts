@@ -3,7 +3,7 @@ import type { ChunkResult, SubmissionDetails, SanitizationInfo } from "@/types";
 // ─── Mock Submission Details ───────────────────────────────────────────────
 
 export const mockSubmissionDetails: SubmissionDetails = {
-  submissionId: "2610566161",
+  encryptionId: "SUB-8924-A71X",
   dateTime: "23-May-2026 02:35PM (UTC+0530)",
   fileName: "Research_Analysis_Paper.docx",
   fileExtension: "docx",
