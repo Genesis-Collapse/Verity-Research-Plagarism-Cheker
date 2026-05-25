@@ -147,6 +147,10 @@ export default function FeedbackStudio() {
                 if (chunkData.error) {
                   throw new Error(chunkData.error);
                 }
+                
+                // Pre-compute regex for UI performance
+                chunkData.has_citations = /(\[[\d,\s]+\]|\([A-Za-z\s]+,\s\d{4}\)|et al\.)/.test(chunkData.full_text);
+
                 localChunks.push(chunkData);
                 setChunks((prev) => {
                   if (prev.find(c => c.chunk_index === chunkData.chunk_index)) return prev;
@@ -199,14 +203,27 @@ export default function FeedbackStudio() {
   const [ignoreCitations, setIgnoreCitations] = useState(false);
 
   const filteredChunksForStats = useMemo(() => {
+    if (!excludeQuotes && !excludeBibliography && !ignoreCitations) {
+      return chunks;
+    }
+
     return chunks.map(chunk => {
       let isPlag = chunk.is_plagiarized;
-      
-      const hasCitations = /(\[[\d,\s]+\]|\([A-Za-z\s]+,\s\d{4}\)|et al\.)/.test(chunk.full_text);
 
       if (excludeQuotes && chunk.is_quote) isPlag = false;
       if (excludeBibliography && chunk.is_bibliography) isPlag = false;
-      if (ignoreCitations && hasCitations) isPlag = false;
+      
+      // Only run regex if necessary, and only if it's currently considered plagiarized
+      if (ignoreCitations && isPlag) {
+        // @ts-ignore - we dynamically added this in the parse step, but fallback just in case
+        const hasCitations = chunk.has_citations ?? /(\[[\d,\s]+\]|\([A-Za-z\s]+,\s\d{4}\)|et al\.)/.test(chunk.full_text);
+        if (hasCitations) isPlag = false;
+      }
+
+      // Avoid creating a new object if nothing changed
+      if (isPlag === chunk.is_plagiarized) {
+        return chunk;
+      }
 
       return {
         ...chunk,

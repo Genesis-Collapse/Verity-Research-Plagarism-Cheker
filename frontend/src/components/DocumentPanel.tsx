@@ -229,7 +229,8 @@ export default function DocumentPanel({
       isAI: r.ai_probability > 0.5,
       aiProb: r.ai_probability,
       maxSim: r.max_similarity,
-      hasCitations: /(\[[\d,\s]+\]|\([A-Za-z\s]+,\s\d{4}\)|et al\.)/.test(r.full_text),
+      // @ts-ignore - pre-computed in FeedbackStudio parse step
+      hasCitations: r.has_citations ?? /(\[[\d,\s]+\]|\([A-Za-z\s]+,\s\d{4}\)|et al\.)/.test(r.full_text),
       isQuote: r.is_quote || false,
       isBibliography: r.is_bibliography || false,
     }));
