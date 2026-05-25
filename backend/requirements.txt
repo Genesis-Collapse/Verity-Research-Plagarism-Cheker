@@ -8,5 +8,5 @@ transformers
 torch
 httpx
 nltk
-python-magic-bin
+python-magic
 slowapi
