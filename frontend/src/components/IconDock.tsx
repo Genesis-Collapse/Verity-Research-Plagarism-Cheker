@@ -230,7 +230,6 @@ function DockIcon({
     <button
       onClick={onClick}
       className={`${baseClasses} ${variantClasses[variant]}`}
-      title={tooltip}
       id={id}
     >
       {children}
