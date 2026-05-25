@@ -1,8 +1,28 @@
+# name: Sync to Hugging Face hub
+# on:
+#   push:
+#     branches: [main] # Change this if your main branch is called 'master'
+
+#   workflow_dispatch:
+
+# jobs:
+#   sync-to-hub:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
+#           lfs: true
+#       - name: Push to hub
+#         env:
+#           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+#         run: git push --force https://Tempest20:$HF_TOKEN@huggingface.co/spaces/Tempest20/verity-backend main
+
+
 name: Sync to Hugging Face hub
 on:
   push:
-    branches: [main] # Change this if your main branch is called 'master'
-
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -13,7 +33,23 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
-      - name: Push to hub
+      - name: Push backend to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push --force https://Tempest20:$HF_TOKEN@huggingface.co/spaces/Tempest20/verity-backend main
+        run: |
+          # 1. Copy the configured README into the backend folder
+          cp README.md backend/
+          
+          # 2. Move into the backend folder
+          cd backend
+          
+          # 3. Create a fresh git setup just for the backend files
+          git init
+          git checkout -b main
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          
+          # 4. Add, commit, and force-push only these files to HF
+          git add .
+          git commit -m "Deploy backend to HF"
+          git push --force https://Tempest20:$HF_TOKEN@huggingface.co/spaces/Tempest20/verity-backend main
