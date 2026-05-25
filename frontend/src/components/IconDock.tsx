@@ -236,7 +236,7 @@ function DockIcon({
       {children}
       {/* Tooltip */}
       <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 hidden group-hover:block z-50 pointer-events-none">
-        <div className="bg-foreground text-white text-xs px-3 py-1.5 rounded-md whitespace-nowrap shadow-lg max-w-xs">
+        <div className="bg-foreground text-white text-xs px-3 py-2 rounded-md shadow-lg w-max max-w-xs text-left">
           {tooltip}
         </div>
       </div>
