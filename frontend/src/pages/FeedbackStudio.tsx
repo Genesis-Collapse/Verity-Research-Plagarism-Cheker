@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Shield,
@@ -186,8 +186,6 @@ export default function FeedbackStudio() {
     return () => abortController.abort();
   }, [file, navigate, scanConfig]);
 
-  const stats = computeMockStats(chunks);
-
   // Panel / modal state
   const [activePanel, setActivePanel] = useState<string | null>(null);
   const [showInfoModal, setShowInfoModal] = useState(false);
@@ -199,6 +197,25 @@ export default function FeedbackStudio() {
   const [excludeQuotes, setExcludeQuotes] = useState(false);
   const [excludeBibliography, setExcludeBibliography] = useState(false);
   const [ignoreCitations, setIgnoreCitations] = useState(false);
+
+  const filteredChunksForStats = useMemo(() => {
+    return chunks.map(chunk => {
+      let isPlag = chunk.is_plagiarized;
+      
+      const hasCitations = /(\[[\d,\s]+\]|\([A-Za-z\s]+,\s\d{4}\)|et al\.)/.test(chunk.full_text);
+
+      if (excludeQuotes && chunk.is_quote) isPlag = false;
+      if (excludeBibliography && chunk.is_bibliography) isPlag = false;
+      if (ignoreCitations && hasCitations) isPlag = false;
+
+      return {
+        ...chunk,
+        is_plagiarized: isPlag
+      };
+    });
+  }, [chunks, excludeQuotes, excludeBibliography, ignoreCitations]);
+
+  const stats = computeMockStats(filteredChunksForStats);
 
   const togglePanel = (panel: string) => {
     setActivePanel((prev) => (prev === panel ? null : panel));
