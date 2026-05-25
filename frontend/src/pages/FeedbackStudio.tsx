@@ -4,6 +4,7 @@ import {
   Shield,
   ChevronLeft,
   ChevronRight,
+  Loader2,
 } from "lucide-react";
 import DocumentPanel from "@/components/DocumentPanel";
 import IconDock from "@/components/IconDock";
@@ -86,6 +87,9 @@ export default function FeedbackStudio() {
         });
 
         if (!response.ok) {
+          if (response.status === 503) {
+            throw new Error("MODELS_LOADING");
+          }
           throw new Error(`Server error: ${response.statusText}`);
         }
 
@@ -256,11 +260,19 @@ export default function FeedbackStudio() {
           className="flex-1 flex flex-col overflow-hidden relative"
           style={{ width: "85%" }}
         >
-          {error && (
+          {error && error === "MODELS_LOADING" ? (
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-blue-50/95 backdrop-blur-sm border border-blue-200 text-blue-700 text-sm px-5 py-3 rounded-xl shadow-lg flex items-center gap-3 animate-in fade-in slide-in-from-top-4">
+              <Loader2 className="w-5 h-5 animate-spin text-blue-500 shrink-0" />
+              <div className="flex flex-col">
+                <span className="font-semibold text-blue-900">AI Engine is warming up</span>
+                <span className="text-blue-700/90 text-xs mt-0.5">Please wait ~30 seconds for the ML models to load into memory, then try uploading again.</span>
+              </div>
+            </div>
+          ) : error ? (
             <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-destructive/10 border border-destructive text-destructive text-sm px-4 py-2 rounded-md shadow-sm">
               Error during analysis: {error}
             </div>
-          )}
+          ) : null}
           <DocumentPanel
             chunks={chunks}
             activeChunkIndex={activeChunkIndex}
