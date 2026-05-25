@@ -151,7 +151,7 @@ export default function FeedbackStudio() {
           console.error("Scan failed:", err);
           const message =
             err.message === "Failed to fetch"
-              ? "Could not connect to the analysis server. Please ensure the backend is running on port 8000."
+              ? "Could not connect to the analysis server. Please check your internet connection or ensure the backend is running."
               : err.message || "An unknown error occurred.";
           setError(message);
           setScanStatus("error");
