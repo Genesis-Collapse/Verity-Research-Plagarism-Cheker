@@ -80,6 +80,31 @@ export default function FeedbackStudio() {
 
       try {
         const apiUrl = import.meta.env.VITE_API_URL || "";
+
+        // Poll /api/health until models are loaded
+        let isReady = false;
+        while (!isReady) {
+          if (abortController.signal.aborted) return;
+          try {
+            const healthRes = await fetch(`${apiUrl}/api/health`, { signal: abortController.signal });
+            if (healthRes.ok) {
+              const healthData = await healthRes.json();
+              if (healthData.models_loaded) {
+                isReady = true;
+                break;
+              }
+            }
+          } catch (e) {
+            console.log("Health check failed, retrying...", e);
+          }
+          // Show warming up UI
+          setError("MODELS_LOADING"); 
+          // Wait 5 seconds before checking again
+          await new Promise(r => setTimeout(r, 5000));
+        }
+
+        setError(null);
+
         const response = await fetch(`${apiUrl}/api/scan`, {
           method: "POST",
           body: formData,
@@ -87,9 +112,6 @@ export default function FeedbackStudio() {
         });
 
         if (!response.ok) {
-          if (response.status === 503) {
-            throw new Error("MODELS_LOADING");
-          }
           throw new Error(`Server error: ${response.statusText}`);
         }
 
@@ -265,7 +287,7 @@ export default function FeedbackStudio() {
               <Loader2 className="w-5 h-5 animate-spin text-blue-500 shrink-0" />
               <div className="flex flex-col">
                 <span className="font-semibold text-blue-900">AI Engine is warming up</span>
-                <span className="text-blue-700/90 text-xs mt-0.5">Please wait ~30 seconds for the ML models to load into memory, then try uploading again.</span>
+                <span className="text-blue-700/90 text-xs mt-0.5">Please wait ~30-40 seconds for the ML models to load into memory. Analysis will begin automatically.</span>
               </div>
             </div>
           ) : error ? (

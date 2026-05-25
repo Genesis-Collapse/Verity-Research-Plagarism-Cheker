@@ -98,7 +98,7 @@ export default function LandingPage() {
               </button>
               <button
                 className="btn-outline text-base px-8 py-3"
-                onClick={() => {}}
+                onClick={() => navigate("/info")}
                 id="cta-learn-more"
               >
                 Learn More
